@@ -17,7 +17,8 @@ class ViewController: UIViewController {
     
     var countries = [String]()
     var score = 0
-    
+    var correctAnswer = 0
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -40,11 +41,36 @@ class ViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
 
-    func askQuestion()  {
+    func askQuestion(action: UIAlertAction! = nil)  {
+        countries = GKRandomSource.sharedRandom().arrayByShufflingObjects(in: countries) as! [String]
+
         button1.setImage(UIImage(named: countries[0]), for: .normal)
         button2.setImage(UIImage(named: countries[1]), for: .normal)
         button3.setImage(UIImage(named: countries[2]), for: .normal)
-    }
+        
+        correctAnswer = GKRandomSource.sharedRandom().nextInt(upperBound: 3)
 
+        title = countries[correctAnswer].uppercased()
+    }
+    
+    @IBAction func buttonTapped(_ sender: UIButton) {
+        var title: String
+        let mytext = "Your score is \(score)."
+
+        
+        if sender.tag == correctAnswer {
+            title = "Correct"
+            score += 1
+        } else {
+            title = "Wrong"
+            score -= 1
+        }
+        
+        let alertController = UIAlertController(title: title, message: mytext, preferredStyle: .alert)
+        let actionButton = UIAlertAction(title: "Continue", style: .default, handler: askQuestion)
+        alertController.addAction(actionButton)
+        present(alertController, animated: true)
+        
+    }
 }
 
